@@ -1,0 +1,68 @@
+{
+  "project_title": "Dépouillement sans Sommation",
+  "genre": "Comédie satirique / Thriller géopolitique et logistique",
+  "format": "Long-métrage (1h30)",
+  "premise": "Un collectif de citoyens et une hackeuse de génie détournent la TVA des multinationales (McDonald's, grande distribution, luxe) et interceptent un convoi de l'imprimerie nationale EuropaFi pour financer le RUP (Revenu Universel Progressif de 700€/mois pour 68 millions de citoyens), dépossédant la classe politique dirigeante de sa narration économique à la fin du mandat d'Emmanuel Macron.",
+  "structure": {
+    "total_acts": 5,
+    "chapters_per_act": 4
+  },
+  "core_elements": {
+    "antagonists_system": "Les 1378 membres de la CNCCFP et la majorité présidentielle ('Ensemble')",
+    "target_assets": "Les 11 poids lourds d'EuropaFi (Clermont-Ferrand) et les flux croisés de la TVA internationale (Opaline)",
+    "beneficiaries": "68 millions de citoyens détenteurs du CVNU (Curriculum Vitae Numérique Universel)",
+    "local_anchoring": "Bavent, Clermont-Ferrand, le Puy-de-Dôme, et les enseignes du quotidien (Leclerc, Lidl, Carrefour, Intermarché, Super U, Aldi, Monoprix ...)"
+  },
+  "narrative_arcs": [
+    {
+      "act": 1,
+      "title": "La Toile Fiscale et l'Opaline",
+      "chapters": [
+        "1. Le labyrinthe de l'Opaline",
+        "2. Le ticket de caisse comme arme du crime",
+        "3. Le grand inventaire du quotidien",
+        "4. La convergence des 11"
+      ]
+    },
+    {
+      "act": 2,
+      "title": "Les 1378 de la Conforme",
+      "chapters": [
+        "1. Le bouclier de la CNCCFP",
+        "2. Le stage de novlangue financière",
+        "3. Les 11 poids lourds d'EuropaFi",
+        "4. L'amorçage du CVNU"
+      ]
+    },
+    {
+      "act": 3,
+      "title": "Le Convoi de l'Opulence",
+      "chapters": [
+        "1. L'aube sur les volcans",
+        "2. Le piège administratif",
+        "3. L'asphalte transformé en passerelle",
+        "4. Le branchement mondial"
+      ]
+    },
+    {
+      "act": 4,
+      "title": "Le Bilan du Quinquennat",
+      "chapters": [
+        "1. L'allocution d'adieu",
+        "2. La notification souveraine",
+        "3. 700 euros pour 68 millions",
+        "4. Le prompteur à sec"
+      ]
+    },
+    {
+      "act": 5,
+      "title": "La Souveraineté Retrouvée",
+      "chapters": [
+        "1. La panique à Bercy",
+        "2. Le départ dans les brumes d'Auvergne",
+        "3. Le nouveau paysage commercial",
+        "4. Le mot de la fin"
+      ]
+    }
+  ]
+}

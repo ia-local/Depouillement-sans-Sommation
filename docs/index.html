@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr" data-fr-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Séquencier - Dépouillement sans Sommation</title>
+    <!-- DSFR CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/utility/utility.min.css">
+</head>
+<body>
+    <header role="banner" class="fr-header">
+        <div class="fr-header__body">
+            <div class="fr-container">
+                <div class="fr-header__body-row">
+                    <div class="fr-header__brand fr-enlarge-link">
+                        <div class="fr-header__brand-top">
+                            <div class="fr-header__logo">
+                                <p class="fr-logo">
+                                    République<br>Française
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-header__service">
+                            <p class="fr-header__service-title">Cinéma & Souveraineté Numérique</p>
+                            <p class="fr-header__service-tagline">Outil de développement de scénario interactif</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main role="main" class="fr-container fr-pb-6w fr-pt-4w">
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12">
+                <!-- En-tête du projet (Hydraté par JS) -->
+                <div class="fr-callout fr-callout--brown-caramel fr-mb-4w">
+                    <h1 class="fr-callout__title" id="project-title">Chargement...</h1>
+                    <p class="fr-callout__text" id="project-premise"></p>
+                    <div class="fr-tags-group fr-mt-2w">
+                        <p class="fr-tag fr-tag--sm" id="project-genre"></p>
+                        <p class="fr-tag fr-tag--sm" id="project-format"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne principale : Les Actes -->
+            <div class="fr-col-12 fr-col-md-8">
+                <h2 class="fr-h3">Séquencier (Story-board)</h2>
+                <div class="fr-accordions-group" id="acts-container">
+                    <!-- Les accordéons seront générés ici -->
+                </div>
+            </div>
+
+            <!-- Colonne secondaire : Éléments Clés -->
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-tile fr-enlarge-link fr-tile--sm">
+                    <div class="fr-tile__body">
+                        <h3 class="fr-tile__title">Éléments Fondamentaux</h3>
+                        <p class="fr-tile__desc fr-text--sm fr-mt-2w" id="core-elements">
+                            <!-- Les éléments de l'intrigue seront générés ici -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="fr-footer" role="contentinfo" id="footer">
+        <div class="fr-container">
+            <div class="fr-footer__body">
+                <div class="fr-footer__brand fr-enlarge-link">
+                    <p class="fr-logo">République<br>Française</p>
+                </div>
+                <div class="fr-footer__content">
+                    <p class="fr-footer__content-desc">Projet RUP / CVNU - Moteur d'Initiative Citoyenne.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- DSFR JS Scripts -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.module.min.js"></script>
+    <script type="text/javascript" nomodule src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.nomodule.min.js"></script>
+    
+    <!-- Script d'orchestration de l'interface -->
+    <script src="main.js"></script>
+</body>
+</html>
