@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr" data-fr-scheme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Storyboard DSFR - Dépouillement sans Sommation">
+  <title>Storyboard - Dépouillement sans Sommation</title>
+
+  <!-- DSFR CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/utility/utility.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/utility/icons/icons.min.css">
+
+  <style>
+    /* Custom DSFR Adjustments for Script Screenplay view */
+    .script-scene-header {
+      background-color: var(--background-action-low-blue-france);
+      color: var(--text-action-high-blue-france);
+      padding: 0.5rem 1rem;
+      border-left: 4px solid var(--border-default-blue-france);
+      font-weight: bold;
+      font-family: monospace;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .script-dialogue {
+      margin-left: 2rem;
+      margin-right: 2rem;
+      padding: 0.75rem 1.25rem;
+      background-color: var(--background-contrast-grey);
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .script-character {
+      font-weight: 700;
+      color: var(--text-title-grey);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .script-system-notif {
+      background-color: var(--background-contrast-info);
+      border: 1px dashed var(--border-default-info);
+      padding: 1rem;
+      font-family: monospace;
+      color: var(--text-default-info);
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .act-badge {
+      font-size: 0.875rem;
+    }
+
+    .search-highlight {
+      background-color: var(--background-contrast-warning);
+      padding: 0.1rem 0.3rem;
+      border-radius: 2px;
+    }
+
+    .json-status-badge {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- EN-TÊTE DSFR -->
+  <header role="banner" class="fr-header">
+    <div class="fr-header__body">
+      <div class="fr-container">
+        <div class="fr-header__body-row">
+          <div class="fr-header__brand fr-enlarge-link">
+            <div class="fr-header__brand-top">
+              <div class="fr-header__logo">
+                <p class="fr-logo">
+                  République<br>Française
+                </p>
+              </div>
+            </div>
+            <div class="fr-header__service">
+              <a href="#" title="Accueil - Dôme d'Initiative Citoyenne">
+                <p class="fr-header__service-title">Storyboard V2 • RIC_ENGINE</p>
+              </a>
+              <p class="fr-header__service-tag">Plateforme Nationale d'Orchestration Scénaristique</p>
+            </div>
+          </div>
+          <div class="fr-header__tools">
+            <div class="fr-header__tools-links">
+              <ul class="fr-btns-group">
+                <li>
+                  <button class="fr-btn fr-icon-refresh-line" id="btn-reload-json" onclick="loadStoryboardData()">
+                    Recharger JSON
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- AJOUT OBLIGATOIRE DSFR : Menu mobile pour la bascule des fr-header__tools-links -->
+    <div class="fr-header__menu fr-modal" id="modal-menu" aria-labelledby="button-menu">
+      <div class="fr-container">
+        <button class="fr-btn--close fr-btn" aria-controls="modal-menu">Fermer</button>
+        <div class="fr-header__menu-links"></div>
+      </div>
+    </div>
+  </header>
+
+  <main role="main" id="content" class="fr-container fr-my-4w">
+
+    <!-- HERO SECTION & APERÇU PROJET -->
+    <div class="fr-card fr-card--grey fr-mb-4w">
+      <div class="fr-card__body">
+        <div class="fr-card__content">
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-12 fr-col-md-8">
+              <p class="fr-badge fr-badge--purple-glycine fr-mb-1w" id="project-genre">Genre : -</p>
+              <p class="fr-badge fr-badge--info fr-mb-1w" id="project-format">Format : -</p>
+              <h1 class="fr-h2 fr-mb-2w" id="project-title">Chargement du Storyboard...</h1>
+              <p class="fr-text--lead" id="project-premise">Connexion à l'API du Storyboard en cours...</p>
+            </div>
+            <div class="fr-col-12 fr-col-md-4">
+              <div class="fr-tile fr-tile--no-border">
+                <div class="fr-tile__body">
+                  <h2 class="fr-tile__title fr-text--md">Métriques Clés</h2>
+                  <ul class="fr-text--sm fr-mb-0" id="project-stats">
+                    <li><strong>Actes :</strong> <span id="stat-acts">-</span></li>
+                    <li><strong>Chapitres :</strong> <span id="stat-chapters">-</span></li>
+                    <li><strong>Protagonistes :</strong> <span id="stat-protagonists">-</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORE ELEMENTS ACCORDION -->
+    <section class="fr-accordion fr-mb-4w">
+      <h2 class="fr-accordion__title">
+        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-core">
+          Ancrage Républicain & Éléments Fondamentaux
+        </button>
+      </h2>
+      <div class="fr-collapse" id="accordion-core">
+        <div class="fr-grid-row fr-grid-row--gutters fr-py-2w" id="core-elements-container">
+          <!-- Injecté dynamiquement -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PROTAGONISTES -->
+    <section class="fr-mb-4w">
+      <h2 class="fr-h3">Équipe des 11 Citoyens (Protagonistes principaux)</h2>
+      <div class="fr-grid-row fr-grid-row--gutters" id="protagonists-container">
+        <!-- Injecté dynamiquement -->
+      </div>
+    </section>
+
+    <hr class="fr-my-4w">
+
+    <!-- RECHERCHE & EXPLORATEUR D'ACTES -->
+    <section class="fr-mb-4w">
+      <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle fr-mb-3w">
+        <div class="fr-col-12 fr-col-md-6">
+          <h2 class="fr-h3 fr-mb-0">Dépouillement des Chapitres</h2>
+        </div>
+        <div class="fr-col-12 fr-col-md-6">
+          <div class="fr-search-bar" id="search-bar" role="search">
+            <label class="fr-label" for="search-input">Rechercher dans le scénario</label>
+            <input class="fr-input" placeholder="Rechercher (ex: TVA, McDo, RUP, Élysée...)" type="search" id="search-input" oninput="handleSearch()">
+            <button class="fr-btn" title="Rechercher">Rechercher</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLETS PAR ACTE -->
+      <div class="fr-tabs">
+        <ul class="fr-tabs__list" role="tablist" aria-label="Navigation par Actes" id="acts-tabs-list">
+          <!-- Injecté dynamiquement -->
+        </ul>
+        <div id="acts-tabs-panels">
+          <!-- Panels d'actes injectés dynamiquement -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BANNIÈRE D'ÉTAT JSON -->
+  <div id="json-status" class="json-status-badge">
+    <p class="fr-badge fr-badge--sm fr-badge--warning">Initialisation...</p>
+  </div>
+
+  <!-- PIED DE PAGE DSFR -->
+  <footer class="fr-footer" role="contentinfo" id="footer">
+    <div class="fr-container">
+      <div class="fr-footer__body">
+        <div class="fr-footer__brand fr-enlarge-link">
+          <p class="fr-logo">
+            République<br>Française
+          </p>
+        </div>
+        <div class="fr-footer__content">
+          <p class="fr-footer__content-desc">
+            Dôme d'Initiative Citoyenne (RIC_ENGINE) — Architecture Zero Trust et conformité constitutionnelle.
+          </p>
+          <ul class="fr-footer__content-list">
+            <li class="fr-footer__content-item"><a class="fr-footer__content-link" href="https://service-public.fr">service-public.fr</a></li>
+            <li class="fr-footer__content-item"><a class="fr-footer__content-link" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a></li>
+            <li class="fr-footer__content-item"><a class="fr-footer__content-link" href="https://gouvernement.fr">gouvernement.fr</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="fr-footer__bottom">
+        <ul class="fr-footer__bottom-list">
+          <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Licence : Open Licence / DSFR</span></li>
+          <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Accessibilité : Totalement conforme</span></li>
+          <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Version API : 2.0.4-DSFR</span></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- DSFR JS -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.module.min.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.nomodule.min.js"></script>
+
+  <!-- SCRIPT APPLICATIF STORYBOARD (ASYNC API / JSON) -->
+  <script>
+    // Données de secours (Fallback) pour garantir l'exécution même sans serveur web local
+    const FALLBACK_STORYBOARD_DATA = {
+      "project_title": "Dépouillement sans Sommation",
+      "genre": "Comédie satirique de braquage / Thriller bureaucratique",
+      "format": "Long-métrage (1h30)",
+      "premise": "Une équipe hétéroclite de 11 citoyens détourne la TVA des multinationales et intercepte un convoi de l'imprimerie EuropaFi grâce à l'arme la plus redoutable du pays : la lourdeur administrative et la langue de bois.",
+      "structure": { "total_acts": 5, "chapters_per_act": 4 },
+      "core_elements": {
+        "antagonists_system": "Le Parti n°1378 ('Ensemble ! Majorité présidentielle') et l'absurdité du système d'État.",
+        "target_assets": "Les 11 poids lourds d'EuropaFi et les flux de la TVA internationale évaporée (Opaline).",
+        "beneficiaries": "68 millions de citoyens détenteurs du CVNU.",
+        "local_anchoring": "Bavent, Clermont-Ferrand, A75 Puy-de-Dôme, McDo, Leclerc, Lidl, Super U."
+      },
+      "protagonists": [
+        { "role": "Le Cerveau (L'Ex-Plume)", "description": "Ancien rédacteur des discours de l'Élysée en burn-out. Paralalyse un gendarme avec une phrase de 3 minutes sans aucun sens." },
+        { "role": "La Hackeuse CVNU", "description": "Génie du code depuis Bavent. Transforme des failles de TVA sur des tickets McDo en smart-contracts impénétrables." },
+        { "role": "La Taupe du Quotidien", "description": "Chef de caisse chez Leclerc. Connaît mieux les flux financiers mondiaux via les codes-barres que le Ministre de l'Économie." },
+        { "role": "Le Logisticien (Le Routier)", "description": "Syndicaliste capable de garer un 38 tonnes au millimètre près pour bloquer un convoi officiel." },
+        { "role": "L'Expert en Cerfa", "description": "Ancien fonctionnaire générant de faux arrêtés préfectoraux validés par pure flemme de les lire." }
+      ],
+      "narrative_arcs": [
+        {
+          "act": 1,
+          "title": "La Toile Fiscale et le Ticket de Caisse",
+          "chapters": [
+            {
+              "title": "1. Le labyrinthe de l'Opaline : Comment perdre un milliard",
+              "content": "INT. MINISTÈRE DE L'ÉCONOMIE - SALLE DES BOISERIES - JOUR\nUn silence religieux pèse sur une salle de réunion dorée à la feuille. Au bout d'une table en acajou démesurée, un cadre sup du Parti n°1378 contemple un graphique abscons...\n\nLE CADRE SUP\n'C'est la beauté de notre système, messieurs. Plus on ajoute d'alinéas, moins ils regardent où part réellement la TVA.'\n\nINT. BUREAU ENCOMBRÉ (BAVENT, NORMANDIE) - NUIT\nContraste brutal. Le bruit frénétique d'un clavier mécanique brise le silence. La Hackeuse CVNU examine un ticket de caisse McDo froissé."
+            },
+            {
+              "title": "2. Le McDo de la discorde (La découverte de la faille)",
+              "content": "EXT. MCDONALD'S DRIVE - BAVENT - JOUR\nUne pluie normande intermittente fouette le pare-brise.\n\nLA TAUPE DU QUOTIDIEN\n'Regarde là. Code 5.5% TVA réduite sur les frites à emporter, mais bascule automatique à 10% si le client demande une sauce deluxe.'\n\nLA HACKEUSE CVNU\n'Ce qui veut dire que la différence – exactement 0,0034 centime par menu – part sur un compte pivot à Dublin.'\n\nLE CERVEAU\n'Jeune homme, pourriez-vous me confirmer si l'assujettissement à la TVA de cet expresso relève de l'article 256 ?'\n\n[ CVNU - DÉPOUILLEMENT DES MICRO-FLUX EN COURS ]\n0,0034€... 0,0068€... 0,0102€..."
+            },
+            {
+              "title": "3. Le casting des 11 (Recruterux que le système ignore)",
+              "content": "INT. RELAIS ROUTIER 'LE SANS-SOUCI' - PRÈS DE CLERMONT-FERRAND - JOUR\nLe Cerveau et La Taupe font face au Logisticien.\n\nLE LOGISTICIEN\n'Arrêter onze semi-remorques d'EuropaFi blindés de papier fiduciaire ? Sans armes ?'\n\nLE CERVEAU\n'Avec le Code des Transports. Article R. 412-28 sur le droit de retrait, combiné à la pause réglementaire de 45 minutes.'"
+            },
+            {
+              "title": "4. Briefing dans la grange : Le plan d'attaque du CVNU",
+              "content": "INT. GRANGE AMÉNAGÉE - BAVENT (NORMANDIE) - NUIT\nBottes de paille empilées. Rétroprojecteur braqué sur un drap blanc.\n\nLE CERVEAU\n'Bienvenue au Briefing Zéro. Ce que nous allons accomplir ce soir n'est ni du banditisme, ni de l'insurrection. C'est un audit comptable citoyen.'"
+            }
+          ]
+        },
+        {
+          "act": 2,
+          "title": "Le Parti n°1378 et l'Art de l'Enfumage",
+          "chapters": [
+            {
+              "title": "1. Dans le ventre de la CNCCFP : Le secret du 1378",
+              "content": "INT. SIÈGE DE LA CNCCFP - PARIS - JOUR\nLe Cerveau et L'Expert en Cerfa s'infiltrent sous le couvert de 'l'Inspection Générale de la Redondance Administrative'.\n\nL'EXPERT EN CERFA\n'Ils font passer le vol de la TVA des menus McDo pour des dons militants spontanés.'"
+            },
+            {
+              "title": "2. Masterclass de Novlangue : Parler comme un ministre",
+              "content": "INT. GRANGE AMÉNAGÉE - BAVENT - JOUR\n\nLE CERVEAU\n'La règle d'or est simple : ne jamais mentir, mais ne jamais dire la vérité. Tu dois lui dire : Dans le cadre d'une optimisation dynamique des protocoles de sécurité, le système a initié une mise en veille préventive.'"
+            },
+            {
+              "title": "3. Repérage à EuropaFi : L'imprimerie des mirages",
+              "content": "EXT. ZONE INDUSTRIELLE D'EUROPAFI - CLERMONT-FERRAND - JOUR\nForteresse automatisée de palettisation de billets.\n\nLE LOGISTICIEN\n'Des bras articulés qui empilent des palettes sans une seule goutte de sueur humaine...'"
+            },
+            {
+              "title": "4. Déploiement des routeurs pirates",
+              "content": "EXT. CLÔTURE D'EUROPAFI - CRÉPUSCULE\nLa Hackeuse clips un routeur pirate sous la trappe de maintenance."
+            }
+          ]
+        },
+        {
+          "act": 3,
+          "title": "Le Braquage Administratif",
+          "chapters": [
+            { "title": "1. L'aube sur les volcans", "content": "EXT. AUTOROUTE A75 - AUBE\nLe convoi d'EuropaFi s'ébranle sous une brume matinale épaisse." },
+            { "title": "2. Le faux barrage sanitaire", "content": "EXT. KM 164 - A75 - JOUR\nL'Expert en Cerfa brandit l'arrêté 404-B devant des gendarmes interloqués." },
+            { "title": "3. La chorégraphie des 11 poids lourds", "content": "11 camions se garent en diagonale synchronisée pour leur pause réglementaire." },
+            { "title": "4. Le piratage des caisses de supermarché", "content": "Bascule simultanée des serveurs de caisse à travers toute la France." }
+          ]
+        },
+        {
+          "act": 4,
+          "title": "Le Climax de la Croissance",
+          "chapters": [
+            {
+              "title": "1. En direct de l'Élysée : Le discours du Bilan Parfait",
+              "content": "INT. SALLE DES FÊTES DE L'ÉLYSÉE - SOIR\nLE PRÉSIDENT : 'L'inflation est terrassée et la croissance retrouve enfin son cours naturel...'"
+            },
+            {
+              "title": "2. L'activation du RUP : Le braquage silencieux",
+              "content": "INT. BAVENT - CONTINUITÉ\nLA HACKEUSE CVNU : 'Exécution du smart-contract RUP-700 sur l'API souveraine.'"
+            },
+            {
+              "title": "3. 700 balles pour tout le monde",
+              "content": "EXT. FRANCE ENTIÈRE - CONTINUITÉ\nPing. Ping. Ping.\n[ CVNU - SYSTÈME SOUVERAIN ] Virement entrant de 700,00 € au titre du Revenu Universel Progressif."
+            },
+            {
+              "title": "4. Le prompteur présidentiel tourne à vide",
+              "content": "INT. ÉLYSÉE - SOIR\nLe prompteur s'efface : [ RUP 700€ - VIREMENT EFFECTUÉ AVEC SUCCÈS ]. Stupeur présidentielle en direct."
+            }
+          ]
+        },
+        {
+          "act": 5,
+          "title": "L'Économie (Très) Circulaire",
+          "chapters": [
+            {
+              "title": "1. Panique chez le n°1378",
+              "content": "INT. SIÈGE DU PARTI N°1378 - NUIT\nTRÉSORIER : 'Le compte pivot de Dublin est à zéro ! L'argent a été versé à 68 millions de citoyens !'"
+            },
+            {
+              "title": "2. Les braqueurs disparaissent dans la brume",
+              "content": "EXT. PLATEAU DE GERGOVIE - AUBE\nL'équipe partage un thermos de café avant de se disperser."
+            },
+            {
+              "title": "3. Épilogue au supermarché",
+              "content": "INT. LECLERC BAVENT - JOUR\nLes caddies sont pleins, la TVA circule désormais dans les bonnes poches."
+            },
+            {
+              "title": "4. Le mot de la fin",
+              "content": "DÉPOUILLEMENT (n.m.) : Opération citoyenne consistant à retourner la complexité administrative contre ses créateurs. Synonyme : Justice par le code."
+            }
+          ]
+        }
+      ]
+    };
+
+    let globalStoryboardData = null;
+
+    // Chargement Async de storyboard.json
+    async function loadStoryboardData() {
+      const statusBadge = document.getElementById('json-status');
+      statusBadge.innerHTML = `<p class="fr-badge fr-badge--sm fr-badge--info">Chargement API...</p>`;
+
+      try {
+        // Tentative de Fetch asynchrone sur storyboard.json ou storyboard_2.json
+        const response = await fetch('storyboard.json').catch(() => fetch('storyboard_2.json'));
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        globalStoryboardData = await response.json();
+        statusBadge.innerHTML = `<p class="fr-badge fr-badge--sm fr-badge--success">JSON API Connecté</p>`;
+      } catch (err) {
+        console.warn("API/JSON inaccessible directement (CORS/Local). Utilisation des données embarquées.", err);
+        globalStoryboardData = FALLBACK_STORYBOARD_DATA;
+        statusBadge.innerHTML = `<p class="fr-badge fr-badge--sm fr-badge--warning">Données Locales (Fallback)</p>`;
+      }
+
+      renderStoryboard(globalStoryboardData);
+    }
+
+    // Affichage global de l'interface DSFR
+    function renderStoryboard(data) {
+      // Metadonnées Projet
+      document.getElementById('project-title').textContent = data.project_title || 'Storyboard';
+      document.getElementById('project-genre').textContent = `Genre : ${data.genre || '-'}`;
+      document.getElementById('project-format').textContent = `Format : ${data.format || '-'}`;
+      document.getElementById('project-premise').textContent = data.premise || '';
+
+      // Stats
+      document.getElementById('stat-acts').textContent = data.structure?.total_acts || data.narrative_arcs?.length || 0;
+      let totalChap = 0;
+      data.narrative_arcs?.forEach(a => totalChap += (a.chapters?.length || 0));
+      document.getElementById('stat-chapters').textContent = totalChap;
+      document.getElementById('stat-protagonists').textContent = data.protagonists?.length || 0;
+
+      // Éléments fondamentaux
+      const coreContainer = document.getElementById('core-elements-container');
+      if (data.core_elements) {
+        coreContainer.innerHTML = Object.entries(data.core_elements).map(([key, val]) => `
+          <div class="fr-col-12 fr-col-md-6">
+            <div class="fr-callout fr-callout--grey">
+              <h3 class="fr-callout__title fr-text--md" style="text-transform: capitalize;">${key.replace('_', ' ')}</h3>
+              <p class="fr-callout__text fr-text--sm">${val}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Protagonistes
+      const protagContainer = document.getElementById('protagonists-container');
+      if (data.protagonists) {
+        protagContainer.innerHTML = data.protagonists.map(p => `
+          <div class="fr-col-12 fr-col-md-4">
+            <div class="fr-card fr-card--sm fr-card--border">
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title fr-text--md">${p.role}</h3>
+                  <p class="fr-card__desc fr-text--sm">${p.description}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Actes & Chapitres
+      renderTabsAndPanels(data.narrative_arcs || []);
+    }
+
+    // Rendu des onglets d'actes DSFR
+    function renderTabsAndPanels(arcs) {
+      const tabsList = document.getElementById('acts-tabs-list');
+      const tabsPanels = document.getElementById('acts-tabs-panels');
+
+      tabsList.innerHTML = '';
+      tabsPanels.innerHTML = '';
+
+      arcs.forEach((arc, idx) => {
+        const tabId = `tab-act-${arc.act}`;
+        const panelId = `panel-act-${arc.act}`;
+        const isSelected = idx === 0;
+
+        // Bouton d'onglet
+        tabsList.innerHTML += `
+          <li role="presentation">
+            <button id="${tabId}" class="fr-tabs__tab" tabIndex="${isSelected ? '0' : '-1'}" role="tab" aria-selected="${isSelected}" aria-controls="${panelId}">
+              Acte ${arc.act} : ${arc.title}
+            </button>
+          </li>
+        `;
+
+        // Contenu du panel
+        const chaptersHtml = (arc.chapters || []).map((chap, cIdx) => {
+          const chapTitle = typeof chap === 'string' ? chap : chap.title;
+          const chapContent = typeof chap === 'object' ? chap.content : '';
+          return `
+            <div class="fr-accordion fr-mb-2w">
+              <h3 class="fr-accordion__title">
+                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="chap-collapse-${arc.act}-${cIdx}">
+                  ${chapTitle}
+                </button>
+              </h3>
+              <div class="fr-collapse" id="chap-collapse-${arc.act}-${cIdx}">
+                <div class="fr-p-2w">
+                  ${formatScriptContent(chapContent)}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        tabsPanels.innerHTML += `
+          <div id="${panelId}" class="fr-tabs__panel ${isSelected ? 'fr-tabs__panel--selected' : ''}" role="tabpanel" aria-labelledby="${tabId}" tabIndex="0">
+            <h3 class="fr-h4">Acte ${arc.act} — ${arc.title}</h3>
+            ${chaptersHtml}
+          </div>
+        `;
+      });
+    }
+
+    // Moteur de formatage de scénario cinéma (INT/EXT, dialogues, notifications)
+    function formatScriptContent(rawContent) {
+      if (!rawContent) return '<p class="fr-text--italic">Résumé de séquence (à tourner).</p>';
+
+      const lines = rawContent.split('\n');
+      let html = '';
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+
+        if (trimmed.startsWith('INT.') || trimmed.startsWith('EXT.')) {
+          html += `<div class="script-scene-header"><span class="fr-icon-map-pin-2-line" aria-hidden="true"></span> ${trimmed}</div>`;
+        } else if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+          html += `<div class="script-system-notif"><span class="fr-icon-code-s-slash-line" aria-hidden="true"></span> ${trimmed}</div>`;
+        } else if (trimmed === trimmed.toUpperCase() && trimmed.length < 35 && !trimmed.includes('\'')) {
+          html += `<div class="script-character fr-mt-2w"><span class="fr-icon-user-fill" aria-hidden="true"></span> ${trimmed}</div>`;
+        } else if (trimmed.startsWith('\'') || trimmed.startsWith('"')) {
+          html += `<div class="script-dialogue fr-text--md"><em>${trimmed}</em></div>`;
+        } else {
+          html += `<p class="fr-text--md fr-mb-1w">${trimmed}</p>`;
+        }
+      });
+
+      return html;
+    }
+
+    // Moteur de recherche globale
+    function handleSearch() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      if (!globalStoryboardData) return;
+
+      if (!query) {
+        renderTabsAndPanels(globalStoryboardData.narrative_arcs || []);
+        return;
+      }
+
+      // Filtrer les chapitres correspondants
+      const filteredArcs = globalStoryboardData.narrative_arcs.map(arc => {
+        const matchingChapters = arc.chapters.filter(chap => {
+          const t = typeof chap === 'string' ? chap : chap.title;
+          const c = typeof chap === 'object' ? chap.content : '';
+          return t.toLowerCase().includes(query) || c.toLowerCase().includes(query);
+        });
+        return { ...arc, chapters: matchingChapters };
+      }).filter(arc => arc.chapters.length > 0);
+
+      renderTabsAndPanels(filteredArcs);
+    }
+
+    // Initialisation au chargement du DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStoryboardData();
+    });
+  </script>
+</body>
+</html>

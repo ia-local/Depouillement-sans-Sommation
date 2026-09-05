@@ -1,0 +1,102 @@
+{
+  "project_title": "Dépouillement sans Sommation",
+  "genre": "Comédie satirique de braquage / Thriller bureaucratique",
+  "format": "Long-métrage (1h30)",
+  "premise": "Une équipe hétéroclite de 11 citoyens détourne la TVA des multinationales et intercepte un convoi de l'imprimerie EuropaFi grâce à l'arme la plus redoutable du pays : la lourdeur administrative et la langue de bois. Leur but ? Financer le RUP (Revenu Universel Progressif de 700€/mois) via le CVNU, et ruiner le discours de fin de mandat du Président.",
+  "structure": {
+    "total_acts": 5,
+    "chapters_per_act": 4
+  },
+  "core_elements": {
+    "antagonists_system": "Le Parti n°1378 ('Ensemble ! Majorité présidentielle' enregistré à la CNCCFP) et l'absurdité du système d'État.",
+    "target_assets": "Les 11 poids lourds d'EuropaFi (Clermont-Ferrand) et les flux de la TVA internationale évaporée (Opaline).",
+    "beneficiaries": "68 millions de citoyens détenteurs du CVNU (Curriculum Vitae Numérique Universel).",
+    "local_anchoring": "Bavent, Clermont-Ferrand, les routes du Puy-de-Dôme, et le guichet de chaque McDonald's et supermarché de France."
+  },
+  "protagonists": [
+    {
+      "role": "Le Cerveau (L'Ex-Plume)",
+      "description": "Ancien rédacteur des discours de l'Élysée en burn-out. Il connaît toutes les failles de la novlangue et peut paralyser un gendarme avec une phrase de 3 minutes sans aucun sens."
+    },
+    {
+      "role": "La Hackeuse CVNU",
+      "description": "Génie du code cynique opérant depuis la Normandie (Bavent). Elle transforme des failles de TVA sur des tickets de caisse McDonald's en smart-contracts impénétrables."
+    },
+    {
+      "role": "La Taupe du Quotidien",
+      "description": "Chef de caisse chez Leclerc. Elle connaît mieux les flux financiers mondiaux via les codes-barres que le Ministre de l'Économie lui-même."
+    },
+    {
+      "role": "Le Logisticien (Le Routier)",
+      "description": "Syndicaliste capable de garer un 38 tonnes au millimètre près pour bloquer n'importe quel convoi officiel en prétextant une pause réglementaire incompressible."
+    },
+    {
+      "role": "L'Expert en Cerfa",
+      "description": "Un ancien fonctionnaire des impôts capable de générer de faux arrêtés préfectoraux tellement complexes que l'administration les valide par pure flemme de les lire."
+    }
+  ],
+  "narrative_arcs": [
+    {
+      "act": 1,
+      "title": "La Toile Fiscale et le Ticket de Caisse",
+      "chapters": [
+        {
+          "title": "1. Le labyrinthe de l'Opaline : Comment perdre un milliard",
+          "content": "INT. MINISTÈRE DE L'ÉCONOMIE - SALLE DES BOISERIES - JOUR... (coller le texte rédigé ici)"
+        },
+        {
+          "title": "2. Le McDo de la discorde (La découverte de la faille de la TVA)",
+          "content": "Texte à rédiger..."
+        },
+        {
+          "title": "3. Le casting des 11 (Recruter ceux que le système ignore)",
+          "content": "Texte à rédiger..."
+        },
+        {
+          "title": "4. Briefing dans la grange : Le plan d'attaque du CVNU",
+          "content": "Texte à rédiger..."
+        }
+      ]
+    },
+    {
+      "act": 2,
+      "title": "Le Parti n°1378 et l'Art de l'Enfumage",
+      "chapters": [
+        "1. Dans le ventre de la CNCCFP : Le secret du numéro 1378",
+        "2. Masterclass de Novlangue : Apprendre à mentir comme un ministre",
+        "3. Repérage à EuropaFi : L'imprimerie des mirages",
+        "4. Déploiement des routeurs pirates (Code et saucisson)"
+      ]
+    },
+    {
+      "act": 3,
+      "title": "Le Braquage Administratif",
+      "chapters": [
+        "1. L'aube sur les volcans : Le convoi s'ébranle",
+        "2. Le faux barrage sanitaire (Paralysie par le formulaire B-27)",
+        "3. La chorégraphie des 11 poids lourds sur l'asphalte",
+        "4. Le piratage des caisses de supermarché en temps réel"
+      ]
+    },
+    {
+      "act": 4,
+      "title": "Le Climax de la Croissance",
+      "chapters": [
+        "1. En direct de l'Élysée : Le discours du 'Bilan Parfait'",
+        "2. L'activation du RUP : Le braquage silencieux",
+        "3. 700 balles pour tout le monde (Ping, ping, ping sur les téléphones)",
+        "4. Le prompteur présidentiel tourne à vide"
+      ]
+    },
+    {
+      "act": 5,
+      "title": "L'Économie (Très) Circulaire",
+      "chapters": [
+        "1. Panique chez le n°1378 : Où est passé l'argent des copains ?",
+        "2. Les braqueurs disparaissent dans la brume auvergnate",
+        "3. Épilogue au supermarché : L'inflation terrassée",
+        "4. Le mot de la fin : Dépouillement (Définition révisée)"
+      ]
+    }
+  ]
+}

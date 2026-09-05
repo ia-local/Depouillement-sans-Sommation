@@ -1,14 +1,98 @@
 <!DOCTYPE html>
 <html lang="fr" data-fr-theme="light">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Séquencier - Dépouillement sans Sommation</title>
-    <!-- DSFR CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/utility/utility.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dépouillement sans Sommation - CVNU</title>
+    
+    <!-- CDN DSFR (Système de Design de l'État) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr/dsfr.min.css">
+    
+    <style>
+        body {
+            background-color: var(--background-default-grey);
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .main-viewport {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slide-item {
+            scroll-snap-align: center;
+            flex: 0 0 100%;
+            width: 100vw;
+            padding: 1rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fr-card {
+            flex-grow: 1;
+            overflow-y: auto;
+            border-top: 4px solid var(--border-plain-blue-france);
+        }
+
+        .fr-card__desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        
+        /* Contrôles de navigation mobile-first */
+        .slider-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--background-alt-grey);
+            border-top: 1px solid var(--border-default-grey);
+            z-index: 10;
+        }
+
+        .slider-progress {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-mention-grey);
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            font-weight: bold;
+            color: var(--text-label-blue-france);
+        }
+    </style>
 </head>
 <body>
+
+    <!-- En-tête officiel DSFR -->
     <header role="banner" class="fr-header">
         <div class="fr-header__body">
             <div class="fr-container">
@@ -22,8 +106,8 @@
                             </div>
                         </div>
                         <div class="fr-header__service">
-                            <p class="fr-header__service-title">Cinéma & Souveraineté Numérique</p>
-                            <p class="fr-header__service-tagline">Outil de développement de scénario interactif</p>
+                            <p class="fr-header__service-title">Système RUP / CVNU</p>
+                            <p class="fr-header__service-tagline">Visualisation des opérations de dépouillement</p>
                         </div>
                     </div>
                 </div>
@@ -31,60 +115,164 @@
         </div>
     </header>
 
-    <main role="main" class="fr-container fr-pb-6w fr-pt-4w">
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12">
-                <!-- En-tête du projet (Hydraté par JS) -->
-                <div class="fr-callout fr-callout--brown-caramel fr-mb-4w">
-                    <h1 class="fr-callout__title" id="project-title">Chargement...</h1>
-                    <p class="fr-callout__text" id="project-premise"></p>
-                    <div class="fr-tags-group fr-mt-2w">
-                        <p class="fr-tag fr-tag--sm" id="project-genre"></p>
-                        <p class="fr-tag fr-tag--sm" id="project-format"></p>
+    <!-- Zone principale avec contrôles intégrés -->
+    <div class="main-viewport">
+        <main role="main" id="story-slider" class="slider-container">
+            <div class="loader">Connexion aux serveurs sécurisés...</div>
+        </main>
+
+        <!-- Barre de navigation tactile par boutons -->
+        <nav class="slider-controls" aria-label="Navigation du storyboard" id="nav-controls" style="display: none;">
+            <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" id="prev-btn" onclick="slidePrev()">
+                Précédent
+            </button>
+            <span class="slider-progress" id="slide-counter">01 / 01</span>
+            <button class="fr-btn fr-btn--icon-right fr-icon-arrow-right-line" id="next-btn" onclick="slideNext()">
+                Suivant
+            </button>
+        </nav>
+    </div>
+
+    <!-- Scripts DSFR -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr/dsfr.module.min.js"></script>
+
+    <!-- Logique Asynchrone & Pilotage des Flèches -->
+    <script>
+        let currentIndex = 0;
+        let totalSlides = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStoryboard();
+        });
+
+        async function loadStoryboard() {
+            const slider = document.getElementById('story-slider');
+            
+            try {
+                const response = await fetch('./storyboard.json');
+                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                
+                const data = await response.json();
+                renderSlides(data, slider);
+                
+                // Activer et synchroniser les contrôles après rendu
+                const slides = slider.querySelectorAll('.slide-item');
+                totalSlides = slides.length;
+                if (totalSlides > 0) {
+                    document.getElementById('nav-controls').style.display = 'flex';
+                    updateCounter();
+                    
+                    // Écouteur pour mettre à jour le compteur lors du swipe manuel tactile
+                    slider.addEventListener('scroll', () => {
+                        const index = Math.round(slider.scrollLeft / slider.clientWidth);
+                        if (index !== currentIndex) {
+                            currentIndex = index;
+                            updateCounter();
+                        }
+                    }, { passive: true });
+                }
+                
+            } catch (error) {
+                console.error("Échec du chargement du storyboard :", error);
+                slider.innerHTML = `
+                    <div class="fr-alert fr-alert--error fr-mx-2w fr-mt-4w">
+                        <h3 class="fr-alert__title">Erreur d'accès classifié</h3>
+                        <p>Impossible de charger le fichier storyboard.json. Détail: ${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        function renderSlides(data, container) {
+            container.innerHTML = '';
+
+            // Slide d'introduction
+            container.appendChild(createSlide(
+                "Dossier : " + data.project_title,
+                data.premise,
+                `Cible : ${data.core_elements.target_assets}`,
+                "0. Synthèse Opérationnelle"
+            ));
+
+            // Parcours des Actes et Chapitres
+            const arcs = Array.isArray(data.narrative_arcs) ? data.narrative_arcs : [data.narrative_arcs];
+            arcs.forEach(act => {
+                if (act && act.chapters) {
+                    act.chapters.forEach(chapter => {
+                        container.appendChild(createSlide(
+                            chapter.title,
+                            chapter.content,
+                            `Acte ${act.act || '-'} : ${act.title || 'Déploiement'}`,
+                            "Archive CVNU"
+                        ));
+                    });
+                }
+            });
+            
+            if (data.act === 4 && data.chapters) {
+                 data.chapters.forEach(chapter => {
+                    container.appendChild(createSlide(
+                        chapter.title,
+                        chapter.content,
+                        `Acte 4 : ${data.title}`,
+                        "Archive CVNU - Temps Réel"
+                    ));
+                });
+            }
+        }
+
+        function createSlide(title, content, surtitle, badgeText) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'slide-item';
+            wrapper.innerHTML = `
+                <div class="fr-card fr-card--no-arrow fr-card--shadow">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <p class="fr-badge fr-badge--info fr-mb-2w">${badgeText}</p>
+                            <p class="fr-card__detail">${surtitle}</p>
+                            <h3 class="fr-card__title">${title}</h3>
+                            <p class="fr-card__desc">${content}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            `;
+            return wrapper;
+        }
 
-            <!-- Colonne principale : Les Actes -->
-            <div class="fr-col-12 fr-col-md-8">
-                <h2 class="fr-h3">Séquencier (Story-board)</h2>
-                <div class="fr-accordions-group" id="acts-container">
-                    <!-- Les accordéons seront générés ici -->
-                </div>
-            </div>
+        function slideNext() {
+            const slider = document.getElementById('story-slider');
+            if (currentIndex < totalSlides - 1) {
+                currentIndex++;
+                scrollToIndex(slider);
+            }
+        }
 
-            <!-- Colonne secondaire : Éléments Clés -->
-            <div class="fr-col-12 fr-col-md-4">
-                <div class="fr-tile fr-enlarge-link fr-tile--sm">
-                    <div class="fr-tile__body">
-                        <h3 class="fr-tile__title">Éléments Fondamentaux</h3>
-                        <p class="fr-tile__desc fr-text--sm fr-mt-2w" id="core-elements">
-                            <!-- Les éléments de l'intrigue seront générés ici -->
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+        function slidePrev() {
+            const slider = document.getElementById('story-slider');
+            if (currentIndex > 0) {
+                currentIndex--;
+                scrollToIndex(slider);
+            }
+        }
 
-    <footer class="fr-footer" role="contentinfo" id="footer">
-        <div class="fr-container">
-            <div class="fr-footer__body">
-                <div class="fr-footer__brand fr-enlarge-link">
-                    <p class="fr-logo">République<br>Française</p>
-                </div>
-                <div class="fr-footer__content">
-                    <p class="fr-footer__content-desc">Projet RUP / CVNU - Moteur d'Initiative Citoyenne.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+        function scrollToIndex(slider) {
+            const targetX = currentIndex * slider.clientWidth;
+            slider.scrollTo({
+                left: targetX,
+                behavior: 'smooth'
+            });
+            updateCounter();
+        }
 
-    <!-- DSFR JS Scripts -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.module.min.js"></script>
-    <script type="text/javascript" nomodule src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/dsfr.nomodule.min.js"></script>
-    
-    <!-- Script d'orchestration de l'interface -->
-    <script src="main.js"></script>
+        function updateCounter() {
+            const counter = document.getElementById('slide-counter');
+            const currentFormatted = String(currentIndex + 1).padStart(2, '0');
+            const totalFormatted = String(totalSlides).padStart(2, '0');
+            counter.textContent = `${currentFormatted} / ${totalFormatted}`;
+
+            // Gestion de l'état désactivé des boutons aux extrémités
+            document.getElementById('prev-btn').disabled = (currentIndex === 0);
+            document.getElementById('next-btn').disabled = (currentIndex === totalSlides - 1);
+        }
+    </script>
 </body>
 </html>
